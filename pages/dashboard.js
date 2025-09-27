@@ -30,6 +30,13 @@ export default function Dashboard({ parsed, ion_username }) {
     <main>
       <h1>TJ VMT Score Lookup</h1>
       <small>Created by Tiger Deng</small>
+
+      <p>
+      <a href="/api/logout">
+      <button type="button">Log out</button>
+      </a>
+      </p>
+
       <h1>Score distributions for {ion_username}</h1>
       <p>If you think something is wrong, please use the <a href="https://forms.gle/VJmjSWczLyepqqj67" target="_blank" rel="noopener noreferrer" >TST Protest Form</a> to submit a protest.</p>
       <p>Problems and Solutions can be found in <a href="https://drive.google.com/drive/folders/172J6msYiVCfyp90GfWD9sc29MN_p9B8Y?usp=sharing" target="_blank" rel="noopener noreferrer" >the TSTs folder</a> in our 2025-26 public drive.</p>
