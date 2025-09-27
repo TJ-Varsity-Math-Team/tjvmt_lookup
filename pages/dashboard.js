@@ -1,16 +1,18 @@
 import { parseWorkbookForUser } from "../lib/parseWorkbook";
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, res }) {
+  // Don't cache
+  res.setHeader("Cache-Control", "no-store");
+
   const authCookie = req.cookies?.auth || null;
   if (!authCookie) {
     return { redirect: { destination: "/", permanent: false } };
   }
 
-  // Your cookie now stores JSON: { access_token, ion_username }
   let ion_username = null;
   try {
-    const parsed = JSON.parse(decodeURIComponent(authCookie));
-    ion_username = parsed.ion_username;
+    const parsedCookie = JSON.parse(decodeURIComponent(authCookie));
+    ion_username = parsedCookie.ion_username;
   } catch {
     return { redirect: { destination: "/", permanent: false } };
   }
@@ -19,10 +21,18 @@ export async function getServerSideProps({ req }) {
     return { redirect: { destination: "/", permanent: false } };
   }
 
-  // ✅ Filter happens entirely on the server; only filtered rows are returned
-  const parsed = parseWorkbookForUser(ion_username);
+  // ✅ Await the async call
+  let parsed = [];
+  try {
+    parsed = await parseWorkbookForUser(ion_username);
+  } catch {
+    parsed = [];
+  }
 
-  return { props: { parsed, ion_username } };
+  // Ensure serializable props (defensive)
+  const safeParsed = JSON.parse(JSON.stringify(parsed));
+
+  return { props: { parsed: safeParsed, ion_username } };
 }
 
 export default function Dashboard({ parsed, ion_username }) {
@@ -32,14 +42,35 @@ export default function Dashboard({ parsed, ion_username }) {
       <small>Created by Tiger Deng</small>
 
       <p>
-      <a href="/api/logout">
-      <button type="button">Log out</button>
-      </a>
+        <a href="/api/logout">
+          <button type="button">Log out</button>
+        </a>
       </p>
 
       <h1>Score distributions for {ion_username}</h1>
-      <p>If you think something is wrong, please use the <a href="https://forms.gle/VJmjSWczLyepqqj67" target="_blank" rel="noopener noreferrer" >TST Protest Form</a> to submit a protest.</p>
-      <p>Problems and Solutions can be found in <a href="https://drive.google.com/drive/folders/172J6msYiVCfyp90GfWD9sc29MN_p9B8Y?usp=sharing" target="_blank" rel="noopener noreferrer" >the TSTs folder</a> in our 2025-26 public drive.</p>
+      <p>
+        If you think something is wrong, please use the{" "}
+        <a
+          href="https://forms.gle/VJmjSWczLyepqqj67"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          TST Protest Form
+        </a>{" "}
+        to submit a protest.
+      </p>
+      <p>
+        Problems and Solutions can be found in{" "}
+        <a
+          href="https://drive.google.com/drive/folders/172J6msYiVCfyp90GfWD9sc29MN_p9B8Y?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          the TSTs folder
+        </a>{" "}
+        in our 2025-26 public drive.
+      </p>
+
       {parsed.map((block, i) => (
         <section key={i}>
           <h2>{block.sheetName}</h2>
