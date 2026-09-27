@@ -57,7 +57,7 @@ export default function Dashboard({ parsed, ion_username }) {
       <p>
         If you think something is wrong, please use the{" "}
         <a
-          href="https://forms.gle/VJmjSWczLyepqqj67"
+          href="https://tjvmt.com/u/tstdispute"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -68,13 +68,13 @@ export default function Dashboard({ parsed, ion_username }) {
       <p>
         Problems and Solutions can be found in{" "}
         <a
-          href="https://drive.google.com/drive/folders/172J6msYiVCfyp90GfWD9sc29MN_p9B8Y?usp=sharing"
+          href="https://drive.google.com/drive/folders/1v6KVzc3iccwJS_QXBPedRrfINxxzLvAE?usp=drive_link"
           target="_blank"
           rel="noopener noreferrer"
         >
           the TSTs folder
         </a>{" "}
-        in our 2025-26 public drive.
+        in our 2026-27 public drive.
       </p>
 
       {parsed.map((block, i) => (
